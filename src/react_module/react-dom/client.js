@@ -10,7 +10,19 @@ class ReactDOMRoot {
 
   render(vdom) {
     const { containerInfo } = this._internalRoot
-    renderVdom(containerInfo, vdom)
+    const { type, props } = vdom
+    if (typeof type === "string") {
+      renderVdom(containerInfo, vdom)
+    } else if (typeof type === "function") {
+      // class组件/function组件
+      if (type.isReactComponent) {
+        const componentInstance = new type(props)
+        console.log("componentInstance", componentInstance)
+        renderVdom(containerInfo, componentInstance.render())
+      } else {
+        renderVdom(containerInfo, type(props))
+      }
+    }
   }
 }
 

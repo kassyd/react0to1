@@ -1,27 +1,31 @@
-import {
-  REACT_ELEMENT
-} from '../instant'
-const React = {
-  createElement
-}
+import { REACT_ELEMENT } from "../instant"
+import Component from "./component"
 
-function createElement(tag, props, ...children) {
-  console.log(tag, props, children)
-  return {
-    type: tag,
+function createElement(type, props, ...children) {
+  const vdom = {
+    type,
     $$$typeof: REACT_ELEMENT,
     props: {
       ...props,
-      children: children.length > 1 ? children.map(handleChild) : handleChild(children[0])
-    }
+    },
   }
+  if (children.length) {
+    vdom.props.children =
+      children.length > 1 ? children.map(handleChild) : handleChild(children[0])
+  }
+  return vdom
 }
 
 function handleChild(child) {
-  if (typeof child !== 'object') {
+  if (typeof child !== "object") {
     return String(child)
   }
   return child
+}
+
+const React = {
+  createElement,
+  Component,
 }
 
 export default React
